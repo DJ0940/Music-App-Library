@@ -13,7 +13,10 @@ const playlistsRouter = require('./routes/playlists');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://3.144.104.107',
+    credentials: true
+}));
 app.use(express.json());
 
 // MongoDB Connection

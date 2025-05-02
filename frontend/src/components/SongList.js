@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import axiosInstance from '../services/axios';
 
 const SongList = () => {
     const [songs, setSongs] = useState([]);
@@ -8,10 +8,11 @@ const SongList = () => {
 
     const fetchSongs = async () => {
         try {
-            const response = await axios.get('/api/songs');
+            const response = await axiosInstance.get('/api/songs');
             setSongs(response.data);
         } catch (error) {
             setMessage('Error loading songs');
+            console.error('Error:', error);
         }
     };
 
@@ -22,11 +23,12 @@ const SongList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this song?')) {
             try {
-                await axios.delete(`/api/songs/${id}`);
+                await axiosInstance.delete(`/api/songs/${id}`);
                 setMessage('Song deleted successfully');
                 fetchSongs();
             } catch (error) {
                 setMessage('Error deleting song');
+                console.error('Error:', error);
             }
         }
     };

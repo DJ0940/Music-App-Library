@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../services/axios';
 
 const AddSong = () => {
     const navigate = useNavigate();
@@ -18,10 +18,11 @@ const AddSong = () => {
         // Fetch genres when component mounts
         const fetchData = async () => {
             try {
-                const genresRes = await axios.get('/api/genres');
+                const genresRes = await axiosInstance.get('/api/genres');
                 setGenres(genresRes.data);
             } catch (error) {
                 setMessage('Error loading data');
+                console.error('Error:', error);
             }
         };
         fetchData();
@@ -33,7 +34,7 @@ const AddSong = () => {
             console.log('Form data being sent:', formData);
             
             // First, create or find the artist
-            const artistResponse = await axios.post('/api/artists', {
+            const artistResponse = await axiosInstance.post('/api/artists', {
                 name: formData.artistName
             });
             console.log('Artist response:', artistResponse.data);
@@ -48,7 +49,7 @@ const AddSong = () => {
             };
             console.log('Song data being sent:', songData);
 
-            const songResponse = await axios.post('/api/songs', songData);
+            const songResponse = await axiosInstance.post('/api/songs', songData);
             console.log('Song response:', songResponse.data);
 
             setMessage('Song added successfully!');

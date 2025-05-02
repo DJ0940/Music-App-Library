@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import axiosInstance from '../services/axios';
 
 const PlaylistList = () => {
     const [playlists, setPlaylists] = useState([]);
@@ -9,10 +9,11 @@ const PlaylistList = () => {
 
     const fetchPlaylists = async () => {
         try {
-            const response = await axios.get('/api/playlists');
+            const response = await axiosInstance.get('/api/playlists');
             setPlaylists(response.data);
         } catch (error) {
             setMessage('Error loading playlists');
+            console.error('Error:', error);
         }
     };
 
@@ -23,23 +24,25 @@ const PlaylistList = () => {
     const handleCreatePlaylist = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/api/playlists', newPlaylist);
+            await axiosInstance.post('/api/playlists', newPlaylist);
             setMessage('Playlist created successfully');
             setNewPlaylist({ name: '', description: '' });
             fetchPlaylists();
         } catch (error) {
             setMessage('Error creating playlist');
+            console.error('Error:', error);
         }
     };
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this playlist?')) {
             try {
-                await axios.delete(`/api/playlists/${id}`);
+                await axiosInstance.delete(`/api/playlists/${id}`);
                 setMessage('Playlist deleted successfully');
                 fetchPlaylists();
             } catch (error) {
                 setMessage('Error deleting playlist');
+                console.error('Error:', error);
             }
         }
     };

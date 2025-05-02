@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import axiosInstance from '../services/axios';
 
 const PlaylistDetail = () => {
     const { id } = useParams();
@@ -14,7 +14,7 @@ const PlaylistDetail = () => {
 
     const fetchPlaylist = useCallback(async () => {
         try {
-            const response = await axios.get(`/api/playlists/${id}`);
+            const response = await axiosInstance.get(`/api/playlists/${id}`);
             setPlaylist(response.data);
             setEditData({
                 name: response.data.name,
@@ -22,15 +22,17 @@ const PlaylistDetail = () => {
             });
         } catch (error) {
             setMessage('Error loading playlist');
+            console.error('Error:', error);
         }
     }, [id]);
 
     const fetchAvailableSongs = async () => {
         try {
-            const response = await axios.get('/api/songs');
+            const response = await axiosInstance.get('/api/songs');
             setAvailableSongs(response.data);
         } catch (error) {
             setMessage('Error loading songs');
+            console.error('Error:', error);
         }
     };
 
@@ -44,7 +46,7 @@ const PlaylistDetail = () => {
         if (!selectedSong) return;
 
         try {
-            await axios.post(`/api/playlists/${id}/songs`, {
+            await axiosInstance.post(`/api/playlists/${id}/songs`, {
                 songId: selectedSong
             });
             setMessage('Song added to playlist');
@@ -52,28 +54,31 @@ const PlaylistDetail = () => {
             fetchPlaylist();
         } catch (error) {
             setMessage('Error adding song to playlist');
+            console.error('Error:', error);
         }
     };
 
     const handleRemoveSong = async (songId) => {
         try {
-            await axios.delete(`/api/playlists/${id}/songs/${songId}`);
+            await axiosInstance.delete(`/api/playlists/${id}/songs/${songId}`);
             setMessage('Song removed from playlist');
             fetchPlaylist();
         } catch (error) {
             setMessage('Error removing song from playlist');
+            console.error('Error:', error);
         }
     };
 
     const handleUpdatePlaylist = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`/api/playlists/${id}`, editData);
+            await axiosInstance.put(`/api/playlists/${id}`, editData);
             setMessage('Playlist updated successfully');
             setEditMode(false);
             fetchPlaylist();
         } catch (error) {
             setMessage('Error updating playlist');
+            console.error('Error:', error);
         }
     };
 

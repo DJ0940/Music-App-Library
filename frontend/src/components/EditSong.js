@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import axiosInstance from '../services/axios';
 
 const EditSong = () => {
     const { id } = useParams();
@@ -19,8 +19,8 @@ const EditSong = () => {
         const fetchData = async () => {
             try {
                 const [songRes, genresRes] = await Promise.all([
-                    axios.get(`/api/songs/${id}`),
-                    axios.get('/api/genres')
+                    axiosInstance.get(`/api/songs/${id}`),
+                    axiosInstance.get('/api/genres')
                 ]);
 
                 const song = songRes.data;
@@ -34,6 +34,7 @@ const EditSong = () => {
                 setGenres(genresRes.data);
             } catch (error) {
                 setMessage('Error loading data');
+                console.error('Error:', error);
             }
         };
         fetchData();
@@ -43,12 +44,12 @@ const EditSong = () => {
         e.preventDefault();
         try {
             // First, create or find the artist
-            const artistResponse = await axios.post('/api/artists', {
+            const artistResponse = await axiosInstance.post('/api/artists', {
                 name: formData.artistName
             });
 
             // Then update the song with the artist ID
-            await axios.put(`/api/songs/${id}`, {
+            await axiosInstance.put(`/api/songs/${id}`, {
                 title: formData.title,
                 duration: formData.duration,
                 releaseYear: formData.releaseYear,
@@ -60,6 +61,7 @@ const EditSong = () => {
             navigate('/songs');
         } catch (error) {
             setMessage('Error updating song');
+            console.error('Error:', error);
         }
     };
 

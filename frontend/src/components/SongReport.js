@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../services/axios';
 
 const SongReport = () => {
     const [filters, setFilters] = useState({
@@ -18,13 +18,14 @@ const SongReport = () => {
         const fetchData = async () => {
             try {
                 const [artistsRes, genresRes] = await Promise.all([
-                    axios.get('/api/artists'),
-                    axios.get('/api/genres')
+                    axiosInstance.get('/api/artists'),
+                    axiosInstance.get('/api/genres')
                 ]);
                 setArtists(artistsRes.data);
                 setGenres(genresRes.data);
             } catch (error) {
                 setMessage('Error loading data: ' + (error.response?.data?.message || error.message));
+                console.error('Error:', error);
             }
         };
         fetchData();
@@ -48,7 +49,7 @@ const SongReport = () => {
                 throw new Error('Start year cannot be greater than end year');
             }
 
-            const response = await axios.get('/api/songs/report', {
+            const response = await axiosInstance.get('/api/songs/report', {
                 params: filters
             });
             setReport(response.data);
