@@ -8,7 +8,7 @@ const SongList = () => {
 
     const fetchSongs = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/songs');
+            const response = await axios.get('/api/songs');
             setSongs(response.data);
         } catch (error) {
             setMessage('Error loading songs');
@@ -22,7 +22,7 @@ const SongList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this song?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/songs/${id}`);
+                await axios.delete(`/api/songs/${id}`);
                 setMessage('Song deleted successfully');
                 fetchSongs();
             } catch (error) {

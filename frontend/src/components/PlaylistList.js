@@ -9,7 +9,7 @@ const PlaylistList = () => {
 
     const fetchPlaylists = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/playlists');
+            const response = await axios.get('/api/playlists');
             setPlaylists(response.data);
         } catch (error) {
             setMessage('Error loading playlists');
@@ -23,7 +23,7 @@ const PlaylistList = () => {
     const handleCreatePlaylist = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/playlists', newPlaylist);
+            await axios.post('/api/playlists', newPlaylist);
             setMessage('Playlist created successfully');
             setNewPlaylist({ name: '', description: '' });
             fetchPlaylists();
@@ -35,7 +35,7 @@ const PlaylistList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this playlist?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/playlists/${id}`);
+                await axios.delete(`/api/playlists/${id}`);
                 setMessage('Playlist deleted successfully');
                 fetchPlaylists();
             } catch (error) {

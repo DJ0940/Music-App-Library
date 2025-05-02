@@ -19,8 +19,8 @@ const EditSong = () => {
         const fetchData = async () => {
             try {
                 const [songRes, genresRes] = await Promise.all([
-                    axios.get(`http://localhost:5000/api/songs/${id}`),
-                    axios.get('http://localhost:5000/api/genres')
+                    axios.get(`/api/songs/${id}`),
+                    axios.get('/api/genres')
                 ]);
 
                 const song = songRes.data;
@@ -43,12 +43,12 @@ const EditSong = () => {
         e.preventDefault();
         try {
             // First, create or find the artist
-            const artistResponse = await axios.post('http://localhost:5000/api/artists', {
+            const artistResponse = await axios.post('/api/artists', {
                 name: formData.artistName
             });
 
             // Then update the song with the artist ID
-            await axios.put(`http://localhost:5000/api/songs/${id}`, {
+            await axios.put(`/api/songs/${id}`, {
                 title: formData.title,
                 duration: formData.duration,
                 releaseYear: formData.releaseYear,

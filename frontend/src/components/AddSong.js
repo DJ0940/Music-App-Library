@@ -18,7 +18,7 @@ const AddSong = () => {
         // Fetch genres when component mounts
         const fetchData = async () => {
             try {
-                const genresRes = await axios.get('http://localhost:5000/api/genres');
+                const genresRes = await axios.get('/api/genres');
                 setGenres(genresRes.data);
             } catch (error) {
                 setMessage('Error loading data');
@@ -33,7 +33,7 @@ const AddSong = () => {
             console.log('Form data being sent:', formData);
             
             // First, create or find the artist
-            const artistResponse = await axios.post('http://localhost:5000/api/artists', {
+            const artistResponse = await axios.post('/api/artists', {
                 name: formData.artistName
             });
             console.log('Artist response:', artistResponse.data);
@@ -48,7 +48,7 @@ const AddSong = () => {
             };
             console.log('Song data being sent:', songData);
 
-            const songResponse = await axios.post('http://localhost:5000/api/songs', songData);
+            const songResponse = await axios.post('/api/songs', songData);
             console.log('Song response:', songResponse.data);
 
             setMessage('Song added successfully!');

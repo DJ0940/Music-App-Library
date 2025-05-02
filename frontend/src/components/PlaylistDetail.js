@@ -14,7 +14,7 @@ const PlaylistDetail = () => {
 
     const fetchPlaylist = useCallback(async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/playlists/${id}`);
+            const response = await axios.get(`/api/playlists/${id}`);
             setPlaylist(response.data);
             setEditData({
                 name: response.data.name,
@@ -27,7 +27,7 @@ const PlaylistDetail = () => {
 
     const fetchAvailableSongs = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/songs');
+            const response = await axios.get('/api/songs');
             setAvailableSongs(response.data);
         } catch (error) {
             setMessage('Error loading songs');
@@ -44,7 +44,7 @@ const PlaylistDetail = () => {
         if (!selectedSong) return;
 
         try {
-            await axios.post(`http://localhost:5000/api/playlists/${id}/songs`, {
+            await axios.post(`/api/playlists/${id}/songs`, {
                 songId: selectedSong
             });
             setMessage('Song added to playlist');
@@ -57,7 +57,7 @@ const PlaylistDetail = () => {
 
     const handleRemoveSong = async (songId) => {
         try {
-            await axios.delete(`http://localhost:5000/api/playlists/${id}/songs/${songId}`);
+            await axios.delete(`/api/playlists/${id}/songs/${songId}`);
             setMessage('Song removed from playlist');
             fetchPlaylist();
         } catch (error) {
@@ -68,7 +68,7 @@ const PlaylistDetail = () => {
     const handleUpdatePlaylist = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:5000/api/playlists/${id}`, editData);
+            await axios.put(`/api/playlists/${id}`, editData);
             setMessage('Playlist updated successfully');
             setEditMode(false);
             fetchPlaylist();

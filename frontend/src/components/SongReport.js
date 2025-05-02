@@ -18,8 +18,8 @@ const SongReport = () => {
         const fetchData = async () => {
             try {
                 const [artistsRes, genresRes] = await Promise.all([
-                    axios.get('http://localhost:5000/api/artists'),
-                    axios.get('http://localhost:5000/api/genres')
+                    axios.get('/api/artists'),
+                    axios.get('/api/genres')
                 ]);
                 setArtists(artistsRes.data);
                 setGenres(genresRes.data);
@@ -48,7 +48,7 @@ const SongReport = () => {
                 throw new Error('Start year cannot be greater than end year');
             }
 
-            const response = await axios.get('http://localhost:5000/api/songs/report', {
+            const response = await axios.get('/api/songs/report', {
                 params: filters
             });
             setReport(response.data);
