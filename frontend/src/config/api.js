@@ -1,3 +1,4 @@
-const API_BASE_URL = 'http://3.144.104.107/api';
+// Use local backend for development
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 export default API_BASE_URL; 

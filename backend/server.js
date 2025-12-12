@@ -14,7 +14,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://3.144.104.107',
+    origin: process.env.FRONTEND_URL || 'http://localhost:3003',
     credentials: true
 }));
 app.use(express.json());

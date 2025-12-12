@@ -43,7 +43,6 @@ const SongReport = () => {
         setLoading(true);
         setMessage('');
         try {
-            // Validate year inputs
             if (filters.startYear && filters.endYear && 
                 parseInt(filters.startYear) > parseInt(filters.endYear)) {
                 throw new Error('Start year cannot be greater than end year');
@@ -65,134 +64,203 @@ const SongReport = () => {
         }
     };
 
+    const formatDuration = (seconds) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+
     return (
-        <div className="container mt-4">
-            <h2>Song Report</h2>
-            {message && <div className={`alert ${message.includes('Error') ? 'alert-danger' : 'alert-info'}`}>{message}</div>}
+        <div className="container mt-5 fade-in">
+            <h2>📊 Music Analytics</h2>
             
-            <form onSubmit={generateReport} className="mb-4">
-                <div className="row">
-                    <div className="col-md-3">
-                        <div className="mb-3">
-                            <label className="form-label">Genre</label>
-                            <select
-                                className="form-control"
-                                name="genreId"
-                                value={filters.genreId}
-                                onChange={handleChange}
-                            >
-                                <option value="">All Genres</option>
-                                {genres.map(genre => (
-                                    <option key={genre._id} value={genre._id}>
-                                        {genre.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="mb-3">
-                            <label className="form-label">Artist</label>
-                            <select
-                                className="form-control"
-                                name="artistId"
-                                value={filters.artistId}
-                                onChange={handleChange}
-                            >
-                                <option value="">All Artists</option>
-                                {artists.map(artist => (
-                                    <option key={artist._id} value={artist._id}>
-                                        {artist.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="mb-3">
-                            <label className="form-label">Start Year</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                name="startYear"
-                                value={filters.startYear}
-                                onChange={handleChange}
-                                placeholder="From Year"
-                                min="1900"
-                                max={new Date().getFullYear()}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="mb-3">
-                            <label className="form-label">End Year</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                name="endYear"
-                                value={filters.endYear}
-                                onChange={handleChange}
-                                placeholder="To Year"
-                                min="1900"
-                                max={new Date().getFullYear()}
-                            />
-                        </div>
-                    </div>
+            {message && (
+                <div className={`alert ${message.includes('Error') ? 'alert-danger' : 'alert-info'} slide-in`}>
+                    {message}
                 </div>
-                <button type="submit" className="btn btn-primary" disabled={loading}>
-                    {loading ? 'Generating...' : 'Generate Report'}
-                </button>
-            </form>
+            )}
+            
+            <div className="card glass mb-4">
+                <div className="card-body">
+                    <h5 className="mb-4">🔍 Filter Your Music</h5>
+                    <form onSubmit={generateReport}>
+                        <div className="row">
+                            <div className="col-md-3 mb-3">
+                                <label className="form-label">🎸 Genre</label>
+                                <select
+                                    className="form-select"
+                                    name="genreId"
+                                    value={filters.genreId}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">All Genres</option>
+                                    {genres.map(genre => (
+                                        <option key={genre._id} value={genre._id}>
+                                            {genre.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="col-md-3 mb-3">
+                                <label className="form-label">🎤 Artist</label>
+                                <select
+                                    className="form-select"
+                                    name="artistId"
+                                    value={filters.artistId}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">All Artists</option>
+                                    {artists.map(artist => (
+                                        <option key={artist._id} value={artist._id}>
+                                            {artist.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="col-md-3 mb-3">
+                                <label className="form-label">📅 From Year</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    name="startYear"
+                                    value={filters.startYear}
+                                    onChange={handleChange}
+                                    placeholder="1900"
+                                    min="1900"
+                                    max={new Date().getFullYear()}
+                                />
+                            </div>
+                            <div className="col-md-3 mb-3">
+                                <label className="form-label">📅 To Year</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    name="endYear"
+                                    value={filters.endYear}
+                                    onChange={handleChange}
+                                    placeholder={new Date().getFullYear().toString()}
+                                    min="1900"
+                                    max={new Date().getFullYear()}
+                                />
+                            </div>
+                        </div>
+                        <button type="submit" className="btn btn-primary" disabled={loading}>
+                            {loading ? (
+                                <>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    Generating...
+                                </>
+                            ) : (
+                                '📊 Generate Report'
+                            )}
+                        </button>
+                    </form>
+                </div>
+            </div>
 
             {report && (
-                <div>
-                    <h3>Statistics</h3>
-                    <div className="row">
-                        <div className="col-md-6">
-                            <div className="card mb-3">
+                <div className="slide-in">
+                    <div className="row mb-4">
+                        <div className="col-md-4">
+                            <div className="card glass text-center hover-lift">
                                 <div className="card-body">
-                                    <h5 className="card-title">General Statistics</h5>
-                                    <p>Total Songs: {report.stats.totalSongs}</p>
-                                    <p>Average Duration: {Math.round(report.stats.averageDuration)} seconds</p>
+                                    <div style={{ fontSize: '3rem' }}>🎵</div>
+                                    <h3 className="mt-2 mb-1" style={{ fontSize: '2.5rem', color: 'var(--primary-light)' }}>
+                                        {report.stats.totalSongs}
+                                    </h3>
+                                    <p className="text-secondary mb-0">Total Songs</p>
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-6">
-                            <div className="card mb-3">
+                        <div className="col-md-4">
+                            <div className="card glass text-center hover-lift">
                                 <div className="card-body">
-                                    <h5 className="card-title">Songs per Genre</h5>
-                                    {report.stats.songsPerGenre && Object.entries(report.stats.songsPerGenre).map(([genre, count]) => (
-                                        <p key={genre}>{genre}: {count}</p>
+                                    <div style={{ fontSize: '3rem' }}>⏱️</div>
+                                    <h3 className="mt-2 mb-1" style={{ fontSize: '2.5rem', color: 'var(--accent)' }}>
+                                        {formatDuration(Math.round(report.stats.averageDuration))}
+                                    </h3>
+                                    <p className="text-secondary mb-0">Avg Duration</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div className="card glass text-center hover-lift">
+                                <div className="card-body">
+                                    <div style={{ fontSize: '3rem' }}>🎸</div>
+                                    <h3 className="mt-2 mb-1" style={{ fontSize: '2.5rem', color: 'var(--secondary)' }}>
+                                        {Object.keys(report.stats.songsPerGenre || {}).length}
+                                    </h3>
+                                    <p className="text-secondary mb-0">Genres</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {report.stats.songsPerGenre && Object.keys(report.stats.songsPerGenre).length > 0 && (
+                        <div className="card glass mb-4">
+                            <div className="card-body">
+                                <h5 className="mb-4">🎸 Songs per Genre</h5>
+                                <div className="row">
+                                    {Object.entries(report.stats.songsPerGenre).map(([genre, count]) => (
+                                        <div key={genre} className="col-md-4 mb-3">
+                                            <div className="d-flex justify-content-between align-items-center p-3" 
+                                                 style={{ 
+                                                     background: 'var(--surface-light)', 
+                                                     borderRadius: '12px',
+                                                     border: '1px solid rgba(99, 102, 241, 0.2)'
+                                                 }}>
+                                                <span className="genre-badge">{genre}</span>
+                                                <span style={{ 
+                                                    fontSize: '1.5rem', 
+                                                    fontWeight: '700',
+                                                    color: 'var(--primary-light)'
+                                                }}>
+                                                    {count}
+                                                </span>
+                                            </div>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    )}
 
-                    <h3>Filtered Songs</h3>
-                    <div className="table-responsive">
-                        <table className="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Artist</th>
-                                    <th>Genre</th>
-                                    <th>Duration</th>
-                                    <th>Release Year</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {report.songs.map(song => (
-                                    <tr key={song._id}>
-                                        <td>{song.title}</td>
-                                        <td>{song.artist.name}</td>
-                                        <td>{song.genre.name}</td>
-                                        <td>{song.duration} seconds</td>
-                                        <td>{song.releaseYear}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="card glass">
+                        <div className="card-body p-0">
+                            <div className="p-4 border-bottom" style={{ borderColor: 'rgba(99, 102, 241, 0.2)' }}>
+                                <h5 className="mb-0">🎵 Filtered Songs ({report.songs.length})</h5>
+                            </div>
+                            {report.songs.length > 0 ? (
+                                <div className="table-responsive">
+                                    <table className="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>🎵 Title</th>
+                                                <th>🎤 Artist</th>
+                                                <th>🎸 Genre</th>
+                                                <th>⏱️ Duration</th>
+                                                <th>📅 Year</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {report.songs.map((song, index) => (
+                                                <tr key={song._id} style={{ animationDelay: `${index * 0.03}s` }} className="fade-in">
+                                                    <td><strong>{song.title}</strong></td>
+                                                    <td><span className="artist-name">{song.artist.name}</span></td>
+                                                    <td><span className="genre-badge">{song.genre.name}</span></td>
+                                                    <td><span className="song-duration">{formatDuration(song.duration)}</span></td>
+                                                    <td><span className="release-year">{song.releaseYear}</span></td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="text-center py-5">
+                                    <p className="text-secondary">No songs match your filters</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
